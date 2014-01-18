@@ -1,10 +1,10 @@
 /*
 textAngular
-Author : Austin Anderson
+Author : Austin Anderson, Chai Yu Pai
 License : 2013 MIT
-Version 1.1.2
+Version 1.1.4
 
-See README.md or https://github.com/fraywing/textAngular/wiki for requirements and use.
+See README.md for requirements and use.
 */
 
 if(!window.console) console = {log: function() {}}; // fixes IE console undefined errors
@@ -134,11 +134,14 @@ textAngular.directive("textAngular", ['$compile', '$window', '$document', '$root
 				html: angular.element("<textarea ng-show='showHtml' ta-bind='html' ng-model='html' ></textarea>"),
 				text: angular.element("<div contentEditable='true' ng-hide='showHtml' ta-bind='text' ng-model='text' ></div>")
 			};
+
 			// add the main elements to the origional element
 			element.append(scope.displayElements.toolbar);
 			element.append(scope.displayElements.photoSelector);
 			element.append(scope.displayElements.text);
 			element.append(scope.displayElements.html);
+
+			$compile(scope.displayElements.photoSelector)(scope);
 			
 			if(!!attrs.name){
 				scope.displayElements.forminput.attr('name', attrs.name);

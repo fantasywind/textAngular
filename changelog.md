@@ -1,5 +1,13 @@
 ###Changelog
 
+2014-01-18 v1.1.4
+
+- Fixed directive $compile
+
+2014-01-18 v1.1.3
+
+- Add new element for photo selector with __photoSelector__ directive
+
 2013-12-11 v1.1.2
 
 - Updated to work correctly with IE (console.log bug)
