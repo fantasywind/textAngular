@@ -29,7 +29,7 @@ textAngular.directive("textAngular", ['$compile', '$window', '$document', '$root
 	};
 	// Here we set up the global display defaults, make sure we don't overwrite any that the user may have already set.
 	$rootScope.textAngularOpts = deepExtend({
-		toolbar: [['paragraph', 'subtitle', 'picture'], ['fit']],
+		toolbar: [['paragraph', 'subtitle', 'picture', 'calendar', 'vote'], ['fit']],
 		classes: {
 			focussed: "focussed",
 			toolbar: "btn-toolbar",
@@ -67,6 +67,30 @@ textAngular.directive("textAngular", ['$compile', '$window', '$document', '$root
 	  },
 	  picture: {
 	    display: "<button ng-click='action()' ng-class='displayActiveToolClass(active)'><i class='fa fa-picture-o'></i> 照片</button>",
+	    action: function() {
+	      var selector;
+	      this.$parent.wrapSelection('formatBlock', '<figure>');
+	      selector = angular.element('<photo-selector></photo-selector>');
+	      return this.$parent.displayElements.toolbar.after(selector);
+	    },
+	    activeState: function() {
+	      return queryFormatBlockState('figure');
+	    }
+	  },
+	  calendar: {
+	    display: "<button ng-click='action()' ng-class='displayActiveToolClass(active)'><i class='fa fa-calendar'></i> 日期</button>",
+	    action: function() {
+	      var selector;
+	      this.$parent.wrapSelection('formatBlock', '<figure>');
+	      selector = angular.element('<photo-selector></photo-selector>');
+	      return this.$parent.displayElements.toolbar.after(selector);
+	    },
+	    activeState: function() {
+	      return queryFormatBlockState('figure');
+	    }
+	  },
+	  vote: {
+	    display: "<button ng-click='action()' ng-class='displayActiveToolClass(active)'><i class='fa fa-bar-chart-o'></i> 投票</button>",
 	    action: function() {
 	      var selector;
 	      this.$parent.wrapSelection('formatBlock', '<figure>');
