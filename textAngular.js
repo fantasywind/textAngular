@@ -70,8 +70,9 @@ textAngular.directive("textAngular", ['$compile', '$window', '$document', '$root
 	    action: function() {
 	      var selector;
 	      this.$parent.wrapSelection('formatBlock', '<figure>');
-	      selector = angular.element('<photo-selector></photo-selector>');
-	      return this.$parent.displayElements.toolbar.after(selector);
+	      $rootScope.$broadcast('showPhotoSelector', this);
+	      //selector = angular.element('<photo-selector></photo-selector>');
+	      //return this.$parent.displayElements.toolbar.after(selector);
 	    },
 	    activeState: function() {
 	      return queryFormatBlockState('figure');
@@ -81,24 +82,20 @@ textAngular.directive("textAngular", ['$compile', '$window', '$document', '$root
 	    display: "<button ng-click='action()' ng-class='displayActiveToolClass(active)'><i class='fa fa-calendar'></i> 日期</button>",
 	    action: function() {
 	      var selector;
-	      this.$parent.wrapSelection('formatBlock', '<figure>');
-	      selector = angular.element('<photo-selector></photo-selector>');
-	      return this.$parent.displayElements.toolbar.after(selector);
+	      this.$parent.wrapSelection('formatBlock', '<event-calendar>');
 	    },
 	    activeState: function() {
-	      return queryFormatBlockState('figure');
+	      return queryFormatBlockState('event-calendar');
 	    }
 	  },
 	  vote: {
 	    display: "<button ng-click='action()' ng-class='displayActiveToolClass(active)'><i class='fa fa-bar-chart-o'></i> 投票</button>",
 	    action: function() {
 	      var selector;
-	      this.$parent.wrapSelection('formatBlock', '<figure>');
-	      selector = angular.element('<photo-selector></photo-selector>');
-	      return this.$parent.displayElements.toolbar.after(selector);
+	      this.$parent.wrapSelection('formatBlock', '<voter>');
 	    },
 	    activeState: function() {
-	      return queryFormatBlockState('figure');
+	      return queryFormatBlockState('voter');
 	    }
 	  },
 	  fit: {
@@ -164,8 +161,6 @@ textAngular.directive("textAngular", ['$compile', '$window', '$document', '$root
 			element.append(scope.displayElements.photoSelector);
 			element.append(scope.displayElements.text);
 			element.append(scope.displayElements.html);
-
-			$compile(scope.displayElements.photoSelector)(scope);
 			
 			if(!!attrs.name){
 				scope.displayElements.forminput.attr('name', attrs.name);
@@ -187,6 +182,7 @@ textAngular.directive("textAngular", ['$compile', '$window', '$document', '$root
 			}
 			
 			// compile the scope with the text and html elements only - if we do this with the main element it causes a compile loop
+			$compile(scope.displayElements.photoSelector)(scope);
 			$compile(scope.displayElements.text)(scope);
 			$compile(scope.displayElements.html)(scope);
 			
@@ -297,6 +293,7 @@ textAngular.directive("textAngular", ['$compile', '$window', '$document', '$root
 			// stop updating on key up and update the display/model
 			keyup = function(e) {
 				scope.bUpdateSelectedStyles = false;
+				if (e.delegateTarget === scope.displayElements.text[0]) checkEmpty();
 			};
 			scope.displayElements.html.on('keyup', keyup);
 			scope.displayElements.text.on('keyup', keyup);
@@ -308,6 +305,22 @@ textAngular.directive("textAngular", ['$compile', '$window', '$document', '$root
 			};
 			scope.displayElements.html.on('mouseup', mouseup);
 			scope.displayElements.text.on('mouseup', mouseup);
+			// insert initial paragraph and check empty when backspace
+			checkEmpty = function() {
+				nodes = scope.displayElements.text[0].childNodes;
+				if (!nodes.length) {
+					initialParagraph = angular.element('<p>');
+					scope.displayElements.text.append(initialParagraph);
+					selection = window.getSelection();
+					if (selection.focusNode === scope.displayElements.text[0]) {
+						range = document.createRange();
+						range.selectNodeContents(initialParagraph[0]);
+						selection.removeAllRanges();
+						selection.addRange(range);
+					}
+				}
+			}
+			scope.displayElements.text.on('focus', checkEmpty);
 		}
 	};
 }]).directive('taBind', ['$sanitize', '$document', 'taFixChrome', function($sanitize, $document, taFixChrome){
