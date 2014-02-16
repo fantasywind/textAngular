@@ -13,6 +13,10 @@ var textAngular = angular.module("textAngular", ['ngSanitize']); //This makes ng
 
 textAngular.directive("textAngular", ['$compile', '$window', '$document', '$rootScope', '$timeout', function($compile, $window, $document, $rootScope, $timeout) {
 	console.log("Thank you for using textAngular! http://www.textangular.com")
+
+	// set default paragraph to <P>
+	document.execCommand('defaultParagraphSeparator', false, 'p');
+
 	// deepExtend instead of angular.extend in order to allow easy customization of "display" for default buttons
 	// snatched from: http://stackoverflow.com/a/15311794/2966847
 	function deepExtend(destination, source) {
@@ -69,13 +73,13 @@ textAngular.directive("textAngular", ['$compile', '$window', '$document', '$root
 	    display: "<button ng-click='action()' ng-class='displayActiveToolClass(active)'><i class='fa fa-picture-o'></i> 照片</button>",
 	    action: function() {
 	      var selector;
-	      this.$parent.wrapSelection('formatBlock', '<figure>');
+	      this.$parent.wrapSelection('formatBlock', '<image-gallery>');
 	      $rootScope.$broadcast('showPhotoSelector', this);
 	      //selector = angular.element('<photo-selector></photo-selector>');
 	      //return this.$parent.displayElements.toolbar.after(selector);
 	    },
 	    activeState: function() {
-	      return queryFormatBlockState('figure');
+	      return queryFormatBlockState('image-gallery');
 	    }
 	  },
 	  calendar: {
